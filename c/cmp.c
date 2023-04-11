@@ -41,7 +41,7 @@ int cmp_files(FILE *file1, FILE *file2, int ignore_case, int verbose) {
 }
 
 int main(int argc, char *argv[]) {
-    int ignore_case = 1;
+    int ignore_case = 0;
     int verbose = 0;
     FILE *file1, *file2;
     // Check for flags
