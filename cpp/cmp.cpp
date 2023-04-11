@@ -3,14 +3,12 @@
 #include <string>
 #include <algorithm>
 
-int main(int argc, char *argv[]) {
-    // Check if enough arguments were provided
+int main(int argc, char* argv[]) {
     if (argc < 3) {
         std::cerr << "Usage: cmp <file1> <file2> [-v] [-i]" << std::endl;
         return 1;
     }
 
-    // Initialize flag variables
     bool verbose = false;
     bool ignore_case = false;
 
@@ -19,12 +17,12 @@ int main(int argc, char *argv[]) {
         std::string arg = argv[i];
         if (arg == "-v") {
             verbose = true;
-        } else if (arg == "-i") {
+        }
+        else if (arg == "-i") {
             ignore_case = true;
         }
     }
 
-    // Open the input files
     std::ifstream file1(argv[1], std::ios::binary);
     std::ifstream file2(argv[2], std::ios::binary);
 
@@ -33,7 +31,6 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    // Compare the files character by character
     bool equal = true;
 
     while (!file1.eof() || !file2.eof()) {
@@ -52,13 +49,13 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    // Check if the files are equal
     if (file1.eof() && file2.eof() && equal) {
         if (verbose) {
             std::cout << "equal" << std::endl;
         }
         return 0;
-    } else {
+    }
+    else {
         if (verbose) {
             std::cout << "distinct" << std::endl;
         }
