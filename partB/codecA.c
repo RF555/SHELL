@@ -1,7 +1,7 @@
 #include "codecA.h"
 #include <ctype.h>
 
-void encode(char *str) {
+void encode_codecA(char *str) {
     int i = 0;
     while (str[i] != '\0') {
         if (islower(str[i])) {
@@ -13,6 +13,6 @@ void encode(char *str) {
     }
 }
 
-void decode(char *str) {
-    encode(str);
+void decode_codecA(char *str) {
+    encode_codecA(str);
 }
