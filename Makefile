@@ -8,7 +8,7 @@ TARGETS_B = encode decode
 LIBS_TARGETS_B = libcodecA.so libcodecB.so
 HEADERS_B = codecA.h codecB.h
 
-default: partA
+default: partA partB
 
 partA: $(TARGETS_A)
 
