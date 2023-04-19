@@ -36,3 +36,18 @@ To copy file `<og_file>` to `<target_file>`:
 * Copy and print result (no overwrite): `./cmp <og_file_path> <target_file_path> -v`
 * Copy allowing overwite: `./cmp <og_file_path> <target_file_path> -f`
 * Copy allowing overwite and print result: `./cmp <og_file_path> <target_file_path> -v -f`
+
+# Part B - Shared Libraries
+Implementation of 2 tools  `encode` and `decode`, utilizing the 2 shared libraries `codecA` and `codecB`.
+
+The tools will get a string and convert it according to the selected library.
+
+## `codecA`
+Covert all lower case chars to upper case, and all upper case to lower case. 
+All other chars will remain unchanged.
+## `codecB`
+Convert all chars to the 3rd next char (add 3 to the ASCII value).
+
+### Command
+* `./encode codecA 'aVBa\$aS dF\!c'` will outupt: `AvbA$As Df!C`
+* `./decode codecB EEEddd` will output `BBBaaa`
