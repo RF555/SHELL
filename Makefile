@@ -8,7 +8,7 @@ TARGETS_B = encode decode
 LIBS_TARGETS_B = libcodecA.so libcodecB.so
 HEADERS_B = codecA.h codecB.h
 
-default: partA partB
+default: partA partB stshell
 
 partA: $(TARGETS_A)
 
@@ -34,6 +34,9 @@ encode: encode.c $(HEADERS_B) $(LIBS_TARGETS_B)
 
 decode: decode.c $(HEADERS) $(LIBS_TARGETS_B)
 	$(CC) $(CFLAGS) -o $@ $< -L. -Wl,-rpath='$$ORIGIN' -lcodecA -lcodecB
+
+stshell: stshell.o
+	$(CC) -o $@ $^
 
 clean:
 	rm -f $(TARGETS_A) $(TARGETS_B) $(LIBS_TARGETS_B) text3.txt *.o
