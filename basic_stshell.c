@@ -6,16 +6,28 @@
 #include "stdlib.h"
 #include "unistd.h"
 #include <string.h>
+#include <signal.h>
+
+int MAX_INPUT = 10;
+int MAX_COMMAND_LEN = 1024;
+
+// Signal handler function for Ctrl+c
+void signal_handler(int sig) {
+    printf("\n");
+}
 
 int main() {
     int i;
-    char *argv[10];
-    char command[1024];
+    char *argv[MAX_INPUT];
+    char command[MAX_COMMAND_LEN];
     char *token;
+
+    // Register the signal handler for SIGINT
+    signal(SIGINT, signal_handler);
 
     while (1) {
         printf("hello: ");
-        fgets(command, 1024, stdin);
+        fgets(command, MAX_COMMAND_LEN, stdin);
         command[strlen(command) - 1] = '\0'; // replace \n with \0
 
         /* parse command line */
