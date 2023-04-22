@@ -39,6 +39,6 @@ stshell: stshell.o
 	$(CC) -o $@ $^
 
 clean:
-	rm -f $(TARGETS_A) $(TARGETS_B) $(LIBS_TARGETS_B) text3.txt *.o
+	rm -f $(TARGETS_A) $(TARGETS_B) $(LIBS_TARGETS_B) stshell text3.txt *.o
 
 .PHONY: all clean
