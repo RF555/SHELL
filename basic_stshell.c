@@ -7,7 +7,7 @@
 #include "unistd.h"
 #include <string.h>
 
-#include "my_stshell.h"
+#include "basic_my_stshell.h"
 
 
 int MAX_INPUT_LEN = 1024;
@@ -23,7 +23,7 @@ int main() {
 
     while (is_alive) {
         /* Start of shell. */
-        printf("%d hello: ",line);
+        printf("%d hello: ",line++);
 
         /* Get input from user and store it in `command`. */
         fgets(command, MAX_INPUT_LEN, stdin);
