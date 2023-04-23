@@ -21,9 +21,6 @@ cmp: cmp.o
 copy: copy.o
 	$(CC) -o $@ $^
 
-%.o: %.c
-	$(CC) $(CFLAGS) -c $<
-
 libcodecA.so: codecA.c $(HEADERS_B)
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $< $(LIBS)
 
@@ -36,11 +33,14 @@ encode: encode.c $(HEADERS_B) $(LIBS_TARGETS_B)
 decode: decode.c $(HEADERS) $(LIBS_TARGETS_B)
 	$(CC) $(CFLAGS) -o $@ $< -L. -Wl,-rpath='$$ORIGIN' -lcodecA -lcodecB
 
-stshell: stshell.o
+stshell: stshell.c
 	$(CC) $(CFLAGS) -o $@ $^
 
 basic_stshell: basic_stshell.o
 	$(CC) $(CFLAGS) -o $@ $^
+
+%.o: %.c
+	$(CC) $(CFLAGS) -c $<
 
 clean:
 	rm -f $(TARGETS_A) $(TARGETS_B) $(LIBS_TARGETS_B) stshell basic_stshell text3.txt *.o
