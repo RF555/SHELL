@@ -1,5 +1,6 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -pedantic -std=c99
+#CFLAGS=-Wall -Wextra -Werror -pedantic -std=c99 -D_POSIX_C_SOURCE=200809L
+CFLAGS=-Wall -Wextra -Werror -pedantic -std=c99
 LDFLAGS = -shared
 LIBS = -lm
 
@@ -8,7 +9,7 @@ TARGETS_B = encode decode
 LIBS_TARGETS_B = libcodecA.so libcodecB.so
 HEADERS_B = codecA.h codecB.h
 
-default: partA partB stshell
+default: partA partB my_stshell
 
 partA: $(TARGETS_A)
 
@@ -36,7 +37,10 @@ decode: decode.c $(HEADERS) $(LIBS_TARGETS_B)
 	$(CC) $(CFLAGS) -o $@ $< -L. -Wl,-rpath='$$ORIGIN' -lcodecA -lcodecB
 
 stshell: stshell.o
-	$(CC) -o $@ $^
+	$(CC) $(CFLAGS) -o $@ $^
+
+basic_stshell: basic_stshell.o
+	$(CC) $(CFLAGS) -o $@ $^
 
 clean:
 	rm -f $(TARGETS_A) $(TARGETS_B) $(LIBS_TARGETS_B) stshell text3.txt *.o
