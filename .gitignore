@@ -54,5 +54,10 @@ dkms.conf
 # IDE
 .idea
 
+# Project
+cmp
+copy
+encode
+decode
 stshell
 basic_shell
