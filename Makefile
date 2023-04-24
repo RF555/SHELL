@@ -43,6 +43,6 @@ basic_stshell: basic_stshell.o
 	$(CC) $(CFLAGS) -c $<
 
 clean:
-	rm -f $(TARGETS_A) $(TARGETS_B) $(LIBS_TARGETS_B) stshell basic_stshell text3.txt *.o
+	rm -f $(TARGETS_A) $(TARGETS_B) $(LIBS_TARGETS_B) stshell basic_stshell text3 text3.txt *.o
 
 .PHONY: all clean
