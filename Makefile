@@ -9,7 +9,7 @@ TARGETS_B = encode decode
 LIBS_TARGETS_B = libcodecA.so libcodecB.so
 HEADERS_B = codecA.h codecB.h
 
-default: partA partB my_stshell
+default: partA partB stshell
 
 partA: $(TARGETS_A)
 
