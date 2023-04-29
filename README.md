@@ -99,4 +99,4 @@ To run the program `stshell` use `./stshell`, then feel free to use it as a shel
 
 ## Full project compilation
 
-to compile th whole project use the command: `make default`.
+To compile th whole project use the command: `make default`.
