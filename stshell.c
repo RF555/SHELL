@@ -9,194 +9,149 @@
 #include <signal.h>
 
 
-enum ALIVE {
-    TRUE = 1,
-    FALSE = 0
-};
+#define MAX_INPUT_LEN 1024
+#define MAX_ARGS 10
+#define MAX_PIPE 10
 
-int MAX_INPUT_LEN = 1024;
-int WAIT = 1;
-enum ALIVE is_alive = TRUE;
+#define PROMPT "\x1b[1;32m~stshell$ \x1b[0m"
+
+pid_t main_pid;
+
 
 /**
  * Signal handler function for SIGINT (Ctrl+C).
  */
-void handle_sigint(void) {
-    printf("\n"); // Print newline after Ctrl+C
-    signal(SIGINT, (__sighandler_t) handle_sigint); // Reinstall the signal handler
+void handle_sigint() {
+    if (getpid() == main_pid) {
+        printf("\n");
+        signal(SIGINT, handle_sigint);
+    } else {
+        signal(SIGINT, SIG_DFL);
+    }
 }
 
 
-int main(void) {
-    int i;
-    char *argv[10];
+int main() {
     char command[MAX_INPUT_LEN];
-    char *token;
-//    char *prev_command[MAX_INPUT_LEN];
-    char *output_file;
-    char *input_file;
-    int output_file_descriptor = -1;
-    int input_file_descriptor = -1;
-//    int pipes[2][2]; // Array of pipe file descriptors
-//    int num_pipes; // Number of pipes to be created
-    pid_t pid;
+    char *argv[MAX_ARGS][MAX_INPUT_LEN];
+    int i;
+    int _args; // number of arguments
+    int _pipes; // number of pipes
+    int children_status; // children_status of children
+    int pipes_fd[MAX_PIPE][2];
+    pid_t p_id;
+    main_pid = getpid();
+    signal(SIGINT, handle_sigint);
 
-//    int line = 0;
-
-    signal(SIGINT, (__sighandler_t) handle_sigint); // Register signal handler for Ctrl+C
-
-    while (is_alive) {
+    while (1) {
         /* Start of shell */
-//        printf("%d hello: ", line++);
-        printf("hello: ");
-        fflush(stdout);
-
+        printf(PROMPT);
         /* Get input from user and store it in `command` */
-        fgets(command, MAX_INPUT_LEN, stdin);
-        command[strlen(command) - 1] = '\0'; // replace \n with \0
-
-        /* Seperate the input by first SPACE */
-        token = strtok(command, " ");
-
-        /* parse command line */
-        i = 0;
-        while (token != NULL) {
-            /* Redirect OUTPUT by `>` */
-            if (strcmp(token, ">") == 0) {
-                /* Get the output file path */
-                output_file = strtok(NULL, " ");
-                if (output_file == NULL) {
-                    fprintf(stderr, "Error: missing output file after %s\n", token);
-                    break;
-                }
-                output_file_descriptor = open(output_file, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
-                if (output_file_descriptor < 0) {
-                    perror("open");
-                    break;
-                }
-                /* Redirect the standard output (stdout) to the file descriptor */
-                dup2(output_file_descriptor, STDOUT_FILENO);
-                close(output_file_descriptor);
-                break;
-
-                /* Redirect OUTPUT by `>>` */
-            } else if (strcmp(token, ">>") == 0) {
-                output_file = strtok(NULL, " ");
-                if (output_file == NULL) {
-                    fprintf(stderr, "Error: missing output file after %s\n", token);
-                    break;
-                }
-                output_file_descriptor = open(output_file, O_WRONLY | O_CREAT | O_APPEND, S_IRUSR | S_IWUSR);
-                if (output_file_descriptor < 0) {
-                    perror("open");
-                    break;
-                }
-                /* Redirect the standard output (stdout) to the file descriptor */
-                dup2(output_file_descriptor, STDOUT_FILENO);
-                close(output_file_descriptor);
-                break;
-
-                /* Redirect INPUT by `<` */
-            } else if (strcmp(token, "<") == 0) {
-                input_file = strtok(NULL, " ");
-                if (input_file == NULL) {
-                    fprintf(stderr, "Error: missing input file after %s\n", token);
-                    break;
-                }
-                input_file_descriptor = open(input_file, O_RDONLY);
-                if (input_file_descriptor < 0) {
-                    perror("open");
-                    break;
-                }
-                dup2(input_file_descriptor, STDIN_FILENO);
-                close(input_file_descriptor);
-                break;
-
-
-                /* Handle piping */
-            } else if (strcmp(token, "|") == 0) {
-                argv[i] = NULL;
-
-
-
-
-//            } else if (strcmp(token, "|") == 0) {
-//                if (pipe(pipes[num_pipes % 2]) < 0) {
-//                    perror("pipe");
-//                    break;
-//                }
-//                pid = fork();
-//                if (pid == -1) {
-//                    perror("fork");
-//                    break;
-//                } else if (pid == 0) { // Child process
-//                    dup2(pipes[num_pipes % 2][1], STDOUT_FILENO);
-//                    close(pipes[num_pipes % 2][0]);
-//                    close(pipes[num_pipes % 2][1]);
-//                    /* Execute the first part of the pipe */
-//                    argv[i] = NULL;
-//                    execvp(argv[0], argv);
-//                    perror("execvp");
-//                    exit(1);
-//                } else { // Parent process
-//                    num_pipes++;
-//                    dup2(pipes[num_pipes % 2][0], STDIN_FILENO);
-//                    close(pipes[num_pipes % 2][0]);
-//                    close(pipes[num_pipes % 2][1]);
-//                    i = 0;
-//                    token = strtok(NULL, " ");
-//                    while (token != NULL) {
-//                        argv[i] = token;
-//                        token = strtok(NULL, " ");
-//                        ++i;
-//                    }
-//                    argv[i] = NULL;
-//                    if (i == 0) {
-//                        fprintf(stderr, "Error: missing command after %s\n", token);
-//                        break;
-//                    }
-//                    /* If there are no more pipes, execute the last part of the pipe */
-//                    if (token == NULL) {
-//                        execvp(argv[0], argv);
-//                        perror("execvp");
-//                        exit(1);
-//                    }
-//                }
-
-
-            } else { // Regular command
-                argv[i] = token;
-                token = strtok(NULL, " ");
-                ++i;
-            }
-        }
-        argv[i] = NULL;
-
-        /* Is command empty */
-        if (argv[0] == NULL) {
-            continue;
-        }
+        fgets(command, sizeof(command), stdin);
+        command[strlen(command) - 1] = '\0';
 
         /* Exit command */
-        if (strcmp(argv[0], "exit") == 0) {
-            exit(0);
+        if (strcmp(command, "exit") == 0) {
+            break;
         }
 
-
-        /* Run CMD tools using Fork */
-        pid = fork();
-        if (pid == -1) {
-            perror("Fork ERROR - can't get process ID");
-        } else if (pid == 0) { /* Child process */
-//            printf("(fork) Executing command: %s\n", argv[0]);
-            execvp(argv[0], argv);
-//            perror("Error executing command");
-            exit(1);
-        } else { /* Parent process */
-            wait(NULL);
-//            printf("Command %s executed\n", argv[0]);
+        /* Seperate the commands input to pipes */
+        char *commands[MAX_PIPE];
+        _pipes = 0;
+        commands[_pipes] = strtok(command, "|");
+        while (commands[_pipes] != NULL) {
+            commands[++_pipes] = strtok(NULL, "|");
         }
 
+        /* Parse as command line */
+        for (i = 0; i < _pipes; ++i) {
+
+            /* Check for output redirection */
+            char *redirect_cmd = NULL;
+            char *redirect_over = strstr(commands[i], ">");
+            char *redirect_app = strstr(commands[i], ">>");
+
+            if (redirect_app != NULL) {
+                redirect_cmd = redirect_app;
+                *redirect_cmd = '\0';
+                redirect_cmd += 2;
+            } else if (redirect_over != NULL) {
+                redirect_cmd = redirect_over;
+                *redirect_cmd = '\0';
+                redirect_cmd += 1;
+            }
+
+            /* Parse command to arguments */
+            _args = 0;
+            argv[i][_args] = strtok(commands[i], " ");
+            while (argv[i][_args] != NULL) {
+                argv[i][++_args] = strtok(NULL, " ");
+            }
+            argv[i][_args] = NULL;
+
+            /* Create pipe */
+            if (pipe(pipes_fd[i]) == -1) {
+                perror("pipe");
+                return 1;
+            }
+
+            /* Fork a process */
+            p_id = fork();
+            if (p_id == -1) {
+                perror("fork");
+                return 1;
+            } else if (p_id == 0) {
+                /* check if child process */
+                if (i > 0) {
+                    dup2(pipes_fd[i - 1][0], STDIN_FILENO);
+                }
+                if (i < _pipes - 1) {
+                    dup2(pipes_fd[i][1], STDOUT_FILENO);
+                }
+
+                for (int j = 0; j < _pipes; ++j) {
+                    if (j != i) {
+                        close(pipes_fd[j][0]);
+                        close(pipes_fd[j][1]);
+                    }
+                }
+
+                /* If output redirection */
+                if (redirect_cmd != NULL) {
+                    int fd;
+                    if (redirect_app != NULL) {
+                        /* Open file for append */
+                        fd = open(redirect_cmd, O_WRONLY | O_APPEND | O_CREAT, 0644);
+                    } else {
+                        /* Open file for overwrite */
+                        fd = open(redirect_cmd, O_WRONLY | O_TRUNC | O_CREAT, 0644);
+                    }
+                    if (fd == -1) {
+                        perror("open");
+                        exit(1);
+                    }
+                    /* Redirect stdout to file */
+                    dup2(fd, STDOUT_FILENO);
+                    close(fd);
+                }
+
+                /* Execute command */
+                if (execvp(argv[i][0], argv[i]) == -1) {
+                    perror("execvp");
+                    exit(1);
+                }
+            } else { // Parent process
+                if (i > 0) {
+                    close(pipes_fd[i - 1][0]);
+                    close(pipes_fd[i - 1][1]);
+                }
+            }
+        }
+
+        /* Wait for children to finish */
+        for (i = 0; i < _pipes; i++) {
+            wait(&children_status);
+        }
     }
     return 0;
 }
