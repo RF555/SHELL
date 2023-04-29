@@ -39,6 +39,10 @@ already exists (unless forced to).
       value).
     * `-f` - Force OVERWRITE (if target file already exists).
 
+### Compilation
+
+To compile the operations `cmp` and `copy` use the command: `make partA`.
+
 ### Command
 
 To copy file `<og_file>` to `<target_file>`:
@@ -63,6 +67,10 @@ All other chars will remain unchanged.
 
 Convert all chars to the 3rd next char (add 3 to the ASCII value).
 
+### Compilation
+
+To compile the libraries `codecA` and `codecB` use the command: `make partB`.
+
 ### Command
 
 * `./encode codecA 'aVBa\$aS dF\!c'` will outupt: `AvbA$As Df!C`
@@ -70,7 +78,7 @@ Convert all chars to the 3rd next char (add 3 to the ASCII value).
 
 ## Part C - Basic Shell
 
-Implementation of a shell program named stshell (st for students).
+Implementation of a shell program named `stshell` (st for students).
 
 ### Features
 
@@ -80,3 +88,15 @@ Implementation of a shell program named stshell (st for students).
 * Redirect output with `>>`, adding to the current content.
 * Allow piping with `|` (for at least 2 consecutive pipes).
 * Stop the shell by `exit` command.
+
+### Compilation
+
+To compile program `stshell` use the command: `make stshell`.
+
+### Running `stshell`
+
+To run the program `stshell` use `./stshell`, then feel free to use it as a shell, to close the program, use `exit`.
+
+## Full project compilation
+
+to compile th whole project use the command: `make default`.
