@@ -2,7 +2,6 @@
 #include <ctype.h>
 
 void encode_codecA(char *message, int message_len, char *encoded) {
-    printf("A - Encoded message: %s\n", message);
     int i = 0;
     while (message[i] != '\0' && i < message_len) {
 //    while (i < message_len) {

@@ -6,7 +6,7 @@
 
 int main(int argc, char *argv[]) {
     if (argc != 3) {
-        printf("Usage: encode <codec> <message>\n");
+        printf("Usage: ./encode <codec> <message>\n");
         return 1;
     }
 
@@ -25,12 +25,14 @@ int main(int argc, char *argv[]) {
     if (strcmp(codec_name, "codecA") == 0) {
         char *encoded = (char *) malloc(message_len + 1);
         encode_codecA(message, message_len, encoded);
-        printf("Encoded message: %s\n", encoded);
+//        printf("<codecA> Encoded message: ");
+        printf("%s\n", encoded);
         free(encoded);
     } else if (strcmp(codec_name, "codecB") == 0) {
         char *encoded = (char *) malloc(message_len + 1);
         encode_codecB(message, message_len, encoded);
-        printf("Encoded message: %s\n", encoded);
+//        printf("<codecB> Encoded message: ");
+        printf("%s\n", encoded);
         free(encoded);
     } else {
         printf("Invalid codec: %s\n", codec_name);
